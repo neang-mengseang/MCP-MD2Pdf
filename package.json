@@ -1,6 +1,6 @@
 {
   "name": "mcp-md2pdf",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "MCP server that converts Markdown to beautiful PDFs. Supports Mermaid diagrams, syntax highlighting, tables, and auto-generated Table of Contents.",
   "main": "dist/index.js",
   "type": "module",
@@ -17,6 +17,7 @@
     "start": "node dist/index.js",
     "dev": "tsc && node dist/index.js",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "preprepublishOnly": "node scripts/auto-version.mjs",
     "prepublishOnly": "npm run build"
   },
   "keywords": [

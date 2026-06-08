@@ -79,7 +79,7 @@ const BULK_TOOL: Tool = {
 
 async function startStdioServer(): Promise<void> {
   const server = new Server(
-    { name: "mcp-md2pdf", version: "1.2.2" },
+    { name: "mcp-md2pdf", version: "1.2.3" },
     { capabilities: { tools: {} } }
   );
 
