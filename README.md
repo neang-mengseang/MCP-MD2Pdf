@@ -1,26 +1,22 @@
 # mcp-md2pdf
 
-An MCP (Model Context Protocol) server that generates beautiful PDFs from Markdown. Supports Mermaid diagrams, syntax-highlighted code blocks, tables, auto-generated Table of Contents, and multiple themes.
+An MCP (Model Context Protocol) server that converts Markdown to beautiful PDFs. Supports Mermaid diagrams, KaTeX math, syntax-highlighted code blocks, tables, auto-generated Table of Contents, and bulk directory conversion.
 
 ## Features
 
 - **GitHub-flavored Markdown** — tables, task lists, strikethrough, fenced code blocks
-- **Mermaid diagrams** — flowcharts, sequence diagrams, class diagrams, ER diagrams, Gantt charts, and more
+- **Mermaid diagrams** — flowcharts, sequence diagrams, class diagrams, ER diagrams, Gantt charts, and more (offline rendering)
+- **KaTeX math** — inline `$...$` and block `$$...$$` math expressions
 - **Syntax highlighting** — 180+ languages via Highlight.js
 - **Auto Table of Contents** — generated from document headings
+- **Bulk conversion** — convert entire directories of `.md` files to PDFs
 - **Themes** — `github` (default), `light`, `dark`
 - **Paper sizes** — A4, Letter, Legal, Tabloid
 - **Landscape & custom margins**
-- **Zero browser downloads** — auto-detects Chrome, Edge, or Chromium already installed on your system
-
-## Requirements
-
-- Node.js 18+
-- A Chromium-based browser (Google Chrome, Microsoft Edge, or Chromium)
-  - **Windows**: Edge or Chrome (auto-detected)
-  - **macOS**: Chrome or Edge in `/Applications`
-  - **Linux**: `google-chrome`, `chromium-browser`, `chromium`, or `microsoft-edge`
-  - **Override**: Set `PUPPETEER_EXECUTABLE_PATH` to force a specific browser path
+- **Header/footer** with automatic page numbers
+- **Local image resolution** via `baseDir` option
+- **Custom CSS injection**
+- **Zero browser downloads** — auto-detects Chrome, Edge, or Chromium
 
 ## Installation
 
@@ -36,13 +32,30 @@ npx -y mcp-md2pdf@latest
 npm install -g mcp-md2pdf
 ```
 
-### From source
+## Usage
+
+### MCP stdio server (default)
 
 ```bash
-git clone https://github.com/yourusername/mcp-md2pdf.git
-cd mcp-md2pdf
-npm install
-npm run build
+mcp-md2pdf
+```
+
+### HTTP server
+
+```bash
+mcp-md2pdf --http 3000
+```
+
+### Single file CLI
+
+```bash
+mcp-md2pdf input.md -o output.pdf --theme dark --toc
+```
+
+### Bulk conversion CLI
+
+```bash
+mcp-md2pdf --bulk ./docs -O ./pdfs --theme github --toc
 ```
 
 ## MCP Client Configuration
@@ -78,89 +91,43 @@ Add to `claude_desktop_config.json`:
 }
 ```
 
-### Cursor / VS Code
+## Tools
 
-Add to your MCP settings:
-
-```json
-{
-  "mcpServers": {
-    "pdf-generator": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "mcp-md2pdf@latest"]
-    }
-  }
-}
-```
-
-## Tool: `generate_pdf`
+### `generate_pdf`
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `markdown` | `string` | Yes | Markdown content to convert |
-| `outputPath` | `string` | No | Absolute file path where the PDF should be saved. If omitted, a temporary file is created. |
-| `theme` | `string` | No | Visual theme. Options: `github` (default), `light`, `dark` |
-| `paperSize` | `string` | No | Paper size. Options: `A4` (default), `Letter`, `Legal`, `Tabloid` |
-| `landscape` | `boolean` | No | Landscape orientation. Default: `false` |
-| `margin` | `object` | No | Page margins. Default: `{ top: "30px", bottom: "30px", left: "30px", right: "30px" }` |
-| `includeToc` | `boolean` | No | Auto-generate Table of Contents from headings. Default: `false` |
+| `markdown` | `string` | Yes | Markdown content |
+| `outputPath` | `string` | No | Where to save the PDF |
+| `theme` | `string` | No | `github`, `light`, `dark` |
+| `paperSize` | `string` | No | `A4`, `Letter`, `Legal`, `Tabloid` |
+| `landscape` | `boolean` | No | Landscape orientation |
+| `margin` | `object` | No | `{ top, bottom, left, right }` |
+| `includeToc` | `boolean` | No | Auto Table of Contents |
+| `header` | `string` | No | HTML header template |
+| `footer` | `string` | No | HTML footer template |
+| `baseDir` | `string` | No | Base dir for relative images |
+| `customCss` | `string` | No | Custom CSS to inject |
 
-## Example Usage
+### `bulk_generate_pdf`
 
-### Basic document
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `inputDir` | `string` | Yes | Directory with `.md` files |
+| `outputDir` | `string` | No | Output directory (default: `md2pdf-<timestamp>`) |
+| `recursive` | `boolean` | No | Scan subdirectories (default: `true`) |
+| `theme` | `string` | No | Theme |
+| `paperSize` | `string` | No | Paper size |
+| `landscape` | `boolean` | No | Landscape |
+| `margin` | `object` | No | Margins |
+| `includeToc` | `boolean` | No | TOC |
+| `header` | `string` | No | Header |
+| `footer` | `string` | No | Footer |
+| `customCss` | `string` | No | Custom CSS |
 
-```json
-{
-  "markdown": "# Project Report\n\n## Introduction\n\nThis is a sample report generated from Markdown.\n\n## Architecture\n\n```mermaid\nflowchart TD\n    A[Client] --> B[API Gateway]\n    B --> C[Auth Service]\n    C --> D[Database]\n```",
-  "theme": "github",
-  "paperSize": "A4",
-  "includeToc": true
-}
-```
+## Examples
 
-### Code with syntax highlighting
-
-```json
-{
-  "markdown": "## Code Example\n\n```typescript\ninterface User {\n  id: string;\n  email: string;\n  role: \"admin\" | \"user\";\n}\n\nfunction getUser(id: string): User {\n  return { id, email: \"test@example.com\", role: \"user\" };\n}\n```",
-  "theme": "dark",
-  "outputPath": "/Users/me/report.pdf"
-}
-```
-
-### Dark theme with landscape
-
-```json
-{
-  "markdown": "# System Design\n\n```mermaid\nsequenceDiagram\n    participant C as Client\n    participant S as Server\n    participant D as DB\n    C->>S: POST /api/login\n    S->>D: SELECT * FROM users\n    D-->>S: user row\n    S-->>C: JWT token\n```",
-  "theme": "dark",
-  "landscape": true,
-  "paperSize": "Letter"
-}
-```
-
-## Troubleshooting
-
-### "No Chromium-based browser found"
-
-Install Chrome, Edge, or Chromium, or set the environment variable:
-
-```bash
-# Windows PowerShell
-$env:PUPPETEER_EXECUTABLE_PATH = "C:\Program Files\Google\Chrome\Application\chrome.exe"
-
-# macOS / Linux
-export PUPPETEER_EXECUTABLE_PATH="/Applications/Google Chrome.app/Contents/MacOS/Google Chrome"
-```
-
-### Mermaid diagrams not rendering
-
-Mermaid diagrams require an internet connection to load the Mermaid JS library from CDN. If you're offline, diagrams will appear as plain text.
-
-### Large PDFs timing out
-
-For very large documents, increase your MCP client's tool timeout. The server itself has no timeout limit.
+See the [`examples/`](./examples) directory for sample usage.
 
 ## License
 
