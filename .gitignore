@@ -1,0 +1,8 @@
+node_modules/
+dist/
+*.log
+*.pdf
+test.mjs
+test-output.pdf
+.DS_Store
+*.tmp

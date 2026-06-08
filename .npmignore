@@ -1,0 +1,8 @@
+src/
+tsconfig.json
+test.mjs
+test-output.pdf
+*.log
+.DS_Store
+.gitignore
+examples/
