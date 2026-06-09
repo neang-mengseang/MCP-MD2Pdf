@@ -7,6 +7,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-06-09
+
+### Added
+- **Programmatic API**: import `mcp-md2pdf` as a library (`generatePdf`, `bulkGeneratePdf`, `markdownToHtml`, etc.).
+- New `exports` field in `package.json` with `"."` (library) and `"./server"` (MCP server) subpaths.
+- New `src/lib.ts` clean library entry point — no side effects on import.
+- TypeScript declaration files (`*.d.ts`) generated for all modules.
+
+### Changed
+- `bin` entry moved from `dist/index.js` to `dist/mcp-server.js`.
+- `src/index.ts` is now the library entry point (re-exports from `lib.ts`).
+- `src/mcp-server.ts` is the dedicated MCP server / CLI entry point.
+
+### Fixed
+- `require.resolve` in ESM context replaced with `createRequire(import.meta.url)`.
+- Default page-number footer now always renders (was never shown when no custom header/footer was provided).
+- Jest worker leak resolved by separating library entry from MCP server startup.
+
+## [1.2.3] - 2026-06-09
+
+### Fixed
+- `require.resolve` ESM compatibility fix.
+- Footer template rendering fix.
+
+## [1.2.2] - 2026-06-08
+
+### Fixed
+- Build artifacts and distribution cleanup.
+
 ## [1.2.1] - 2026-06-08
 
 ### Fixed

@@ -1,6 +1,6 @@
 import { createServer, type IncomingMessage, type ServerResponse } from "http";
-import { generatePdf, bulkGeneratePdf } from "./pdf-engine.js";
-import type { GeneratePdfOptions, BulkGeneratePdfOptions } from "./types.js";
+import { generatePdf, bulkGeneratePdf } from "md2pdf-core";
+import type { GeneratePdfOptions, BulkGeneratePdfOptions } from "md2pdf-core";
 
 /* ------------------------------------------------------------------ */
 /*  Shared tool schemas                                               */

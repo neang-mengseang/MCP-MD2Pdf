@@ -1,7 +1,7 @@
 import { readFileSync } from "fs";
 import { resolve, dirname } from "path";
-import { generatePdf, bulkGeneratePdf } from "./pdf-engine.js";
-import type { GeneratePdfOptions, BulkGeneratePdfOptions } from "./types.js";
+import { generatePdf, bulkGeneratePdf } from "md2pdf-core";
+import type { GeneratePdfOptions, BulkGeneratePdfOptions } from "md2pdf-core";
 
 export interface CliArgs {
   mode: "stdio" | "http" | "cli" | "bulk";
@@ -178,9 +178,14 @@ export async function runSingleFileCli(args: CliArgs): Promise<void> {
     customCss = readFileSync(resolve(args.cssPath), "utf-8");
   }
 
+  const resolvedInput = resolve(args.inputPath);
+  const defaultOutput = args.outputPath
+    ? resolve(args.outputPath)
+    : resolvedInput.replace(/\.md$/i, ".pdf");
+
   const options: GeneratePdfOptions = {
     markdown,
-    outputPath: args.outputPath ? resolve(args.outputPath) : undefined,
+    outputPath: defaultOutput,
     theme: ["light", "dark", "github"].includes(args.theme || "")
       ? (args.theme as GeneratePdfOptions["theme"])
       : "github",
@@ -191,7 +196,7 @@ export async function runSingleFileCli(args: CliArgs): Promise<void> {
     includeToc: args.toc,
     header: args.header,
     footer: args.footer,
-    baseDir: args.baseDir ? resolve(args.baseDir) : dirname(resolve(args.inputPath)),
+    baseDir: args.baseDir ? resolve(args.baseDir) : dirname(resolvedInput),
     customCss,
   };
 

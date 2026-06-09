@@ -1,11 +1,23 @@
 {
   "name": "mcp-md2pdf",
-  "version": "1.2.3",
-  "description": "MCP server that converts Markdown to beautiful PDFs. Supports Mermaid diagrams, syntax highlighting, tables, and auto-generated Table of Contents.",
+  "version": "1.3.1",
+  "description": "Convert Markdown to beautiful PDFs. MCP server, CLI, and programmatic API. Supports Mermaid diagrams, KaTeX math, syntax highlighting, tables, and auto-generated Table of Contents.",
   "main": "dist/index.js",
   "type": "module",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./server": {
+      "import": "./dist/mcp-server.js",
+      "types": "./dist/mcp-server.d.ts"
+    }
+  },
   "bin": {
-    "mcp-md2pdf": "dist/index.js"
+    "mcp-md2pdf": "dist/mcp-server.js",
+    "m2p": "dist/mcp-server.js"
   },
   "files": [
     "dist",
@@ -25,7 +37,11 @@
     "pdf",
     "markdown",
     "mermaid",
-    "model-context-protocol"
+    "model-context-protocol",
+    "library",
+    "api",
+    "katex",
+    "syntax-highlighting"
   ],
   "author": "PDF Generator MCP Contributors",
   "license": "MIT",
@@ -39,12 +55,7 @@
   "homepage": "https://github.com/yourusername/mcp-md2pdf#readme",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
-    "highlight.js": "^11.11.0",
-    "katex": "^0.16.21",
-    "marked": "^15.0.0",
-    "marked-highlight": "^2.2.0",
-    "mermaid": "^10.9.0",
-    "puppeteer-core": "^23.0.0"
+    "md2pdf-core": "^1.0.0"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
