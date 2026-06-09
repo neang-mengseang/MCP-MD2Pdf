@@ -47,12 +47,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/yourusername/mcp-md2pdf.git"
+    "url": "https://github.com/neang-mengseang/MCP-MD2Pdf.git"
   },
   "bugs": {
-    "url": "https://github.com/yourusername/mcp-md2pdf/issues"
+    "url": "https://github.com/neang-mengseang/MCP-MD2Pdf/issues"
   },
-  "homepage": "https://github.com/yourusername/mcp-md2pdf#readme",
+  "homepage": "https://github.com/neang-mengseang/MCP-MD2Pdf#readme",
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
     "md2pdf-core": "^1.0.0"
